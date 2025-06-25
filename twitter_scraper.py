@@ -6,9 +6,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import json
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file in current directory
+dotenv_path = ".\\apikey.env"
+load_dotenv(dotenv_path)
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 SEARCH_TEXT = "AI cybersecurity trends"
-NUM_TWEETS_TO_SCRAPE = 20
+NUM_TWEETS_TO_SCRAPE = 5
 
 # Setup Chrome with your profile
 options = Options()
@@ -88,7 +96,53 @@ try:
         json.dump(tweet_data, f, ensure_ascii=False, indent=2)
 
     print(f"✅ Saved {len(tweet_data)} tweets to tweets.json")
-    time.sleep(10)
+    time.sleep(5)
+
+    # === GPT SUMMARIZATION SECTION ===
+    all_tweets = [tweet.get("text", "") for tweet in tweet_data if tweet.get("text")]
+    if not all_tweets:
+        print("❌ No valid tweet text to summarize.")
+        exit()
+
+    combined_text = "\n\n".join(all_tweets)
+    if len(combined_text) > 8000:
+        combined_text = combined_text[:8000] + "..."
+
+    prompt = f"""
+You are a cybersecurity content writer who creates clear, concise, and informative posts for a Twitter account focused on trending cybersecurity news. 
+
+Summarize the following tweets into a few highly engaging, original tweet-style summaries (no hashtags needed). Each summary should highlight a key topic, threat, breakthrough, or discussion point in cybersecurity. Keep the summaries punchy, fact-focused, and relevant to infosec professionals:
+
+---
+{combined_text}
+---
+
+Summarized tweets:
+"""
+
+    # Use new OpenAI SDK format
+    client = OpenAI(api_key=openai_api_key)
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=[
+                {"role": "system", "content": "You summarize cybersecurity tweets for Twitter posts."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=500
+        )
+
+        summaries = response.choices[0].message.content
+
+        with open("summarized_tweets.json", "w", encoding="utf-8") as f:
+            json.dump({"summaries": summaries}, f, ensure_ascii=False, indent=2)
+
+        print("✅ Summarized tweets saved to summarized_tweets.json")
+
+    except Exception as e:
+        print(f"❌ OpenAI API request failed: {e}")
 
 except Exception as e:
     print(f"❌ Error: {e}")
