@@ -1,8 +1,15 @@
-install selenium and chromewebdriver (will add instructions on this)
+### X/Twitter Tweet Summarizer with Selenium
 
-create a profile for selenium testing and log into twitter once so you don't have to repeadtly do it and potentially get flagged by the system
+## Program description:
+opens X/twitter search, searches topics you want a summary of, scrapes the tweets, and create personalized tweets by summarizing the ones it scraped. summarizing powered by ChatGPT API. 
 
-when running, close all instances of chrome
+## Instructions:
+install your ChromeWebDriver: https://developer.chrome.com/docs/chromedriver/downloads
 
-Program description:
-opens twitter search, closes cookie banner, searches something up
+install selenium:
+```
+    pip install selenium
+```
+
+## Before running:
+create a profile for selenium testing and log into X/twitter (so you don't have to repeadtly do it and potentially get flagged as a bot). make sure the chrome profile path in the code (twitter_scraper.py) matches the one you are using.
