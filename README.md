@@ -8,7 +8,7 @@ install your ChromeWebDriver: https://developer.chrome.com/docs/chromedriver/dow
 
 install selenium:
 ```
-    pip install selenium
+pip install selenium
 ```
 
 ## Before running:
