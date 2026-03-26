@@ -12,4 +12,8 @@ pip install selenium
 ```
 
 ## Before running:
+<<<<<<< HEAD
 create a profile for selenium testing and log into X/twitter (so you don't have to repeadtly do it and potentially get flagged as a bot). make sure the chrome profile path in the code (twitter_scraper.py) matches the one you are using.
+=======
+create a profile for selenium testing and log into X/twitter (so you don't have to repeadtly do it and potentially get flagged as a bot). make sure the chrome profile path in the code (twitter_scraper.py) matches the one you are using.
+>>>>>>> e798ca713ec46e14a6524a778c8c49d0bebbcf8b
